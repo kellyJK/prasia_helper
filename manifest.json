@@ -1,0 +1,57 @@
+{
+  "name": "리네아 맹약 준비 To-do",
+  "short_name": "리네아 To-do",
+  "description": "리네아 맹약 준비를 위한 부캐별 할일 관리 앱",
+  "version": "1.0.0",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#6366f1",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "ko",
+  "categories": ["productivity", "games", "utilities"],
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+
+  "shortcuts": [
+    {
+      "name": "새 할일 추가",
+      "short_name": "할일 추가",
+      "description": "새로운 할일을 빠르게 추가합니다",
+      "url": "/?action=add-task",
+      "icons": [
+        {
+          "src": "icon.svg",
+          "sizes": "any"
+        }
+      ]
+    },
+    {
+      "name": "부캐 대시보드",
+      "short_name": "대시보드",
+      "description": "부캐별 진행률을 확인합니다",
+      "url": "/?view=dashboard",
+      "icons": [
+        {
+          "src": "icon.svg",
+          "sizes": "any"
+        }
+      ]
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false,
+  "edge_side_panel": {
+    "preferred_width": 400
+  },
+  "launch_handler": {
+    "client_mode": "navigate-existing"
+  }
+}

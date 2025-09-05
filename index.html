@@ -1,0 +1,1805 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>프전맹약작헬퍼</title>
+    
+    <!-- Favicon 설정 -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="icon" type="image/png" sizes="16x16" href="img/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="img/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="128x128" href="img/favicon-128x128.png">
+    <link rel="icon" type="image/png" sizes="196x196" href="img/favicon-196x196.png">
+    <link rel="apple-touch-icon" sizes="196x196" href="img/favicon-196x196.png">
+    
+    <link rel="stylesheet" href="styles.css">
+    
+    <style>
+        /* 버튼 텍스트 정렬 개선 */
+        .btn {
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            vertical-align: middle !important;
+        }
+        
+        .btn * {
+            vertical-align: middle !important;
+        }
+        
+        .btn .icon {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+        
+        .btn .icon img {
+            vertical-align: middle !important;
+        }
+        
+        /* 셀렉트박스 스타일 개선 */
+        .form-select {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url('img/chevron-down.svg');
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 16px;
+            padding-right: 40px;
+        }
+        
+        .form-select::-ms-expand {
+            display: none;
+        }
+        
+        .form-select:focus {
+            outline: none;
+            border-color: #0D6DFD;
+            box-shadow: 0 0 0 3px rgba(13, 109, 253, 0.1);
+        }
+    </style>
+
+</head>
+<body>
+    <!-- GNB -->
+    <header class="gnb">
+        <div class="gnb-container">
+            <div class="gnb-left">
+                <button class="gnb-logo" onclick="navigateTo('home')">
+                    <img src="img/logo.png" alt="부캐맹약런 로고" />
+                </button>
+            </div>
+            <div class="gnb-right">
+                <div class="account-selector">
+                    <select id="accountSelect" onchange="changeAccount(this.value)" disabled>
+                        <option value="">계정을 선택하세요</option>
+                    </select>
+                </div>
+                <span id="statusIndicator" class="status-indicator status-offline"></span>
+            </div>
+        </div>
+    </header>
+
+    <!-- 사이드바 -->
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-content">
+            <ul class="nav-menu">
+                <li><a href="#" onclick="navigateTo('home')" class="nav-item active" data-view="home">
+                    <span class="nav-icon"><img src="img/home.svg"></span> 메인
+                </a></li>
+                <li><a href="#" onclick="navigateTo('accounts')" class="nav-item" data-view="accounts">
+                    <span class="nav-icon"><img src="img/account.svg"></span> 계정 관리
+                </a></li>
+                <li><a href="#" onclick="navigateTo('characters')" class="nav-item" data-view="characters">
+                    <span class="nav-icon"><img src="img/user.svg"></span> 부캐 관리
+                </a></li>
+                <li><a href="#" onclick="navigateTo('calendar')" class="nav-item" data-view="calendar">
+                    <span class="nav-icon"><img src="img/calendar.svg"></span> 캘린더
+                </a></li>
+                <li><a href="#" onclick="navigateTo('settings')" class="nav-item" data-view="settings">
+                    <span class="nav-icon"><img src="img/settings.svg"></span> 설정
+                </a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 메인 콘텐츠 -->
+    <main class="main-content">
+        <!-- 앱 콘텐츠가 여기에 동적으로 로드됩니다 -->
+    </main>
+
+    <!-- 모달들 -->
+    <div id="modalOverlay" class="modal-overlay" style="display: none;">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">제목</h3>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div id="modalContent">
+                <!-- 모달 내용이 여기에 동적으로 삽입됩니다 -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 전역 상태 관리
+        let currentView = 'home';
+        let selectedAccountId = null;
+        let accounts = [];
+        let characters = [];
+        let settings = {};
+        let activityLogs = [];
+        let currentCalendarDate = new Date();
+
+        // 상수 정의
+        const SERVERS = {
+            '아우리엘': ['아우리엘 01', '아우리엘 04', '아우리엘 05'],
+            '론도': ['론도 02', '론도 03', '론도 04'],
+            '라인소프': ['라인소프 01', '라인소프 02', '라인소프 03', '라인소프 05'],
+            '시길': ['시길 01', '시길 04'],
+            '아민타': ['아민타 01', '아민타 02', '아민타 03', '아민타 05'],
+            '이오스': ['이오스 01', '이오스 02', '이오스 03'],
+            '가리안': ['가리안 03', '가리안 04', '가리안 05'],
+            '벨세이즈': ['벨세이즈 01', '벨세이즈 03', '벨세이즈 04'],
+            '사도바': ['사도바 01', '사도바 02', '사도바 04'],
+            '제롬': ['제롬 01', '제롬 04', '제롬 05'],
+            '아티산': ['아티산 01', '아티산 02', '아티산 04'],
+            '엘렌': ['엘렌 01', '엘렌 02', '엘렌 04'],
+            '나세르': ['나세르 01', '나세르 02', '나세르 03', '나세르 05'],
+            '필레츠': ['필레츠 01', '필레츠 03', '필레츠 05'],
+            '타리아': ['타리아 01', '타리아 02', '타리아 03', '타리아 04'],
+            '카렐': ['카렐 01', '카렐 02', '카렐 04', '카렐 05'],
+            '나스카': ['나스카 02', '나스카 03'],
+            '벤아트': ['벤아트 01', '벤아트 02', '벤아트 03'],
+            '페넬로페': ['페넬로페 01', '페넬로페 02', '페넬로페 03'],
+            '마커스': ['마커스 03', '마커스 04', '마커스 05', '마커스 06', '마커스 07'],
+            '르비안트': ['르비안트 03'],
+            '카시미르': ['카시미르 01', '카시미르 02'],
+            '트렌체': ['트렌체 01', '트렌체 02', '트렌체 03'],
+            '바이람': ['바이람 01', '바이람 02', '바이람 03', '바이람 04'],
+            '메르비스': ['메르비스 01', '메르비스 02', '메르비스 03']
+        };
+
+        const STRONGHOLDS = {
+            '크론': [
+                '서리절벽 주둔지', '눈바람 해안 주둔지', '백야성 요새', '눈꽃빙하 주둔지'
+            ],
+            '라인소프': [
+                '파도맞이 주둔지', '황금항 요새', '무법지대 주둔지', '운하미로 주둔지', 
+                '용암터 주둔지', '소금 벌판 주둔지', '떠오른 바다 주둔지'
+            ],
+            '시길': [
+                '잊혀진 신전 주둔지', '모래칼날 주둔지', '잿빛달 요새'
+            ],
+            '아민타': [
+                '거울숲 요새', '검은숲 주둔지', '은빛장원 주둔지', '축제수림 주둔지', 
+                '숲의 무덤 주둔지', '푸른불꽃 주둔지'
+            ],
+            '론도': [
+                '론도 대성채', '토룡곡 주둔지', '통곡의 고성 주둔지', '안개호수 주둔지', 
+                '어둠노을 주둔지', '붉은 나락 주둔지'
+            ]
+        };
+
+        const FACTIONS = [
+            '카시미르연합', '아슬라니스', '황혼의형제들', '신기루연대', '타라프', '채움의탑',
+            '얽힘공단', '직조공길드', '붉은닻', '파도몰이', '깃털펜', '백야수',
+            '수풀민', '묘지기', '안개지기', '사이노드'
+        ];
+
+        // 페이지 로드 시 자동으로 앱 시작
+        window.addEventListener('load', function() {
+            loadData();
+            // 1초 후 자동으로 앱으로 이동
+            setTimeout(() => {
+                startApp();
+            }, 1000);
+        });
+
+        // 데이터 로드
+        function loadData() {
+            accounts = JSON.parse(localStorage.getItem('prasia_accounts') || '[]');
+            characters = JSON.parse(localStorage.getItem('prasia_characters') || '[]');
+            settings = JSON.parse(localStorage.getItem('prasia_settings') || '{}');
+            activityLogs = JSON.parse(localStorage.getItem('prasia_activity') || '[]');
+            selectedAccountId = settings.selectedAccountId || (accounts.length > 0 ? accounts[0].id : null);
+        }
+
+        // 데이터 저장
+        function saveData() {
+            localStorage.setItem('prasia_accounts', JSON.stringify(accounts));
+            localStorage.setItem('prasia_characters', JSON.stringify(characters));
+            localStorage.setItem('prasia_settings', JSON.stringify(settings));
+            localStorage.setItem('prasia_activity', JSON.stringify(activityLogs));
+        }
+
+        // 앱 시작
+        function startApp() {
+            // 기존 데모 UI 완전히 제거
+            const main = document.querySelector('main');
+            main.innerHTML = '';
+            
+            // 사이드바 표시
+            document.getElementById('sidebar').classList.add('open');
+            document.querySelector('.main-content').classList.add('sidebar-open');
+            
+            // 계정 선택기 업데이트
+            updateAccountSelector();
+            
+            // 앱 UI 표시
+            if (accounts.length === 0) {
+                showOnboarding();
+            } else {
+                navigateTo('home');
+            }
+        }
+
+        // 계정 선택기 업데이트
+        function updateAccountSelector() {
+            const select = document.getElementById('accountSelect');
+            select.innerHTML = '<option value="">계정을 선택하세요</option>';
+            
+            accounts.forEach(account => {
+                const option = document.createElement('option');
+                option.value = account.id;
+                option.textContent = account.name + (account.isPrimary ? ' (본계정)' : '');
+                if (account.id === selectedAccountId) {
+                    option.selected = true;
+                }
+                select.appendChild(option);
+            });
+            
+            select.disabled = accounts.length === 0;
+        }
+
+        // 계정 변경
+        function changeAccount(accountId) {
+            selectedAccountId = accountId;
+            settings.selectedAccountId = accountId;
+            saveData();
+            
+            // 현재 뷰 새로고침
+            navigateTo(currentView);
+        }
+
+        // 네비게이션
+        function navigateTo(view) {
+            currentView = view;
+            
+            // 사이드바 활성 상태 업데이트
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            document.querySelector(`[data-view="${view}"]`).classList.add('active');
+            
+            // 뷰 렌더링
+            switch(view) {
+                case 'home':
+                    renderHomeView();
+                    break;
+                case 'accounts':
+                    renderAccountsView();
+                    break;
+                case 'characters':
+                    renderCharactersView();
+                    break;
+                case 'calendar':
+                    renderCalendarView();
+                    break;
+                case 'settings':
+                    renderSettingsView();
+                    break;
+            }
+        }
+
+        // 온보딩 화면
+        function showOnboarding() {
+            const main = document.querySelector('main');
+            main.innerHTML = `
+                <div class="app-container">
+                    <div class="welcome-card">
+                        <h2>계정을 먼저 추가해주세요 :-)</h2>
+                        <p>계정을 통해 맹약 증서 구매 현황을 관리합니다. 이후 부캐를 연결해 의뢰·레벨을 추적할 수 있어요.</p>
+                        
+                        <div class="quick-actions">
+                            <button class="btn btn-primary" onclick="showAddAccountModal()">
+                                <span class="icon"><img src="img/plus.svg"></span>
+                                계정 추가
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // 홈 뷰 렌더링
+        function renderHomeView() {
+            const selectedAccount = accounts.find(acc => acc.id === selectedAccountId);
+            const accountCharacters = characters.filter(char => char.accountId === selectedAccountId);
+            
+            const main = document.querySelector('main');
+            main.innerHTML = `
+                <div class="app-container flex-column">
+                    ${selectedAccount ? `
+                        <div class="account-summary">
+                            <h2>계정 현황</h2>
+                            <div class="account-card main-account">
+                                <h3>${selectedAccount.name} ${selectedAccount.isPrimary ? '<span class="badge primary">본계정</span>' : ''}</h3>
+                                <p>맹약 증서: ${selectedAccount.covenants.purchased.length}개 구매 / ${selectedAccount.covenants.total}개 전체</p>
+                                <button class="btn" onclick="navigateTo('accounts')">
+                                    <span class="icon"><img src="img/chevron-right.svg"></span>
+                                    
+                                </button>
+                            </div>
+                            
+                        </div>
+                        
+                        <div class="characters-section">
+                            <h2>⚔️ 부캐 현황</h2>
+                            ${accountCharacters.length > 0 ? `
+                                <div class="characters-grid">
+                                    ${accountCharacters.map(char => `
+                                        <div class="character-card">
+                                            <h4>${char.name}</h4>
+                                            <p>레벨: ${char.level || '미설정'}</p>
+                                            <p>서버: ${char.server} - ${char.channel}</p>
+                                            <div class="quest-progress">
+                                                <p>의뢰 진행도: ${getTotalQuestCount(char)}/20 (${20 - getTotalQuestCount(char)}개 남음)</p>
+                                                <div class="progress-bar">
+                                                    <div class="progress-fill" style="width: ${(getTotalQuestCount(char) / 20) * 100}%"></div>
+                                                </div>
+                                            </div>
+                                            <div class="character-actions">
+                                                <button class="btn btn-sm btn-gray" onclick="editCharacter('${char.id}')">편집</button>
+                                                <button class="btn btn-sm btn-gray" onclick="updateQuestCount('${char.id}')">의뢰 카운트</button>
+                                            </div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            ` : `
+                                <div class="empty-state">
+                                    <p>등록된 부캐가 없습니다.</p>
+                                    <p>상단의 "부캐 추가하기" 버튼을 클릭하여 부캐를 추가해보세요.</p>
+                                </div>
+                            `}
+                        </div>
+                        
+                        <div class="quick-actions main-quick-actions">
+                            <button class="btn btn-primary" onclick="navigateTo('characters')">
+                                <span class="icon"><img src="img/plus.svg"></span>
+                                부캐 추가하기
+                            </button>
+                            <button class="btn btn-secondary" onclick="navigateTo('calendar')">
+                                <span class="icon"><img src="img/calendar.svg"></span>
+                                활동 기록 캘린더
+                            </button>
+                        </div>
+                    ` : `
+                        <div class="welcome-card">
+                            <h2>계정을 먼저 추가해주세요 :-)</h2>
+                            <p>계정은 맹약 증서 구매 현황을 관리합니다. 이후 부캐를 연결해 의뢰·레벨을 추적할 수 있어요.</p>
+                            
+                            <div class="quick-actions">
+                                <button class="btn btn-primary" onclick="showAddAccountModal()">
+                                    <span class="icon"><img src="img/plus.svg"></span>
+                                    계정 추가
+                                </button>
+                            </div>
+                        </div>
+                    `}
+
+                    <span class="creator">made by 키야. 문의는 오픈채팅으로!</span>
+                </div>
+            `;
+        }
+
+        // 계정 관리 뷰 렌더링
+        function renderAccountsView() {
+            const main = document.querySelector('main');
+            main.innerHTML = `
+                <div class="app-container">
+                    <div class="page-header">
+                        <h2>계정 관리</h2>
+                        <button class="btn btn-primary" onclick="showAddAccountModal()">
+                            <span class="icon"><img src="img/plus.svg"></span>
+                            계정 추가
+                        </button>
+                    </div>
+                    
+                    <div class="accounts-list">
+                        ${accounts.map(account => `
+                            <div class="account-item">
+                                <div class="account-info">
+                                    <h3>${account.name} ${account.isPrimary ? '<span class="badge primary">본계정</span>' : ''}</h3>
+                                    <p>생성일: ${new Date(account.createdAt).toLocaleDateString()}</p>
+                                    
+                                    <!-- 맹약 증서 아코디언 -->
+                                    <div class="covenant-accordion">
+                                        <div class="accordion-header" onclick="toggleCovenantAccordion('${account.id}')">
+                                            <span class="accordion-title">맹약 증서 구매 현황</span>
+                                            <span class="accordion-count">${account.covenants.purchased.length}/${account.covenants.total}개</span>
+                                            <span class="accordion-arrow" id="arrow_${account.id}"><img src="img/chevron-down.svg"></span>
+                                        </div>
+                                        <div class="accordion-content" id="content_${account.id}" style="display: none;">
+                                            <div class="covenant-groups">
+                                                <div class="covenant-group">
+                                                    <h4>1그룹</h4>
+                                                    <div class="covenant-checkboxes">
+                                                        ${FACTIONS.slice(0, 4).map(faction => {
+                                                            const isPurchased = account.covenants.purchased.includes(faction);
+                                                            return `
+                                                                <div class="checkbox-item">
+                                                                    <input type="checkbox" id="covenant_${account.id}_${faction}" value="${faction}" ${isPurchased ? 'checked' : ''} onchange="updateCovenantCount('${account.id}')">
+                                                                    <label for="covenant_${account.id}_${faction}">${faction}</label>
+                                                                </div>
+                                                            `;
+                                                        }).join('')}
+                                                    </div>
+                                                </div>
+                                                <div class="covenant-group">
+                                                    <h4>2그룹</h4>
+                                                    <div class="covenant-checkboxes">
+                                                        ${FACTIONS.slice(4, 10).map(faction => {
+                                                            const isPurchased = account.covenants.purchased.includes(faction);
+                                                            return `
+                                                                <div class="checkbox-item">
+                                                                    <input type="checkbox" id="covenant_${account.id}_${faction}" value="${faction}" ${isPurchased ? 'checked' : ''} onchange="updateCovenantCount('${account.id}')">
+                                                                    <label for="covenant_${account.id}_${faction}">${faction}</label>
+                                                                </div>
+                                                            `;
+                                                        }).join('')}
+                                                    </div>
+                                                </div>
+                                                <div class="covenant-group">
+                                                    <h4>3그룹</h4>
+                                                    <div class="covenant-checkboxes">
+                                                        ${FACTIONS.slice(10, 16).map(faction => {
+                                                            const isPurchased = account.covenants.purchased.includes(faction);
+                                                            return `
+                                                                <div class="checkbox-item">
+                                                                    <input type="checkbox" id="covenant_${account.id}_${faction}" value="${faction}" ${isPurchased ? 'checked' : ''} onchange="updateCovenantCount('${account.id}')">
+                                                                    <label for="covenant_${account.id}_${faction}">${faction}</label>
+                                                                </div>
+                                                            `;
+                                                        }).join('')}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="account-actions">
+                                    <button class="btn btn-sm" onclick="editAccount('${account.id}')">편집</button>
+                                    <button class="btn btn-sm btn-danger" onclick="deleteAccount('${account.id}')">삭제</button>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        // 부캐 관리 뷰 렌더링
+        function renderCharactersView() {
+            const accountCharacters = characters.filter(char => char.accountId === selectedAccountId);
+            
+            const main = document.querySelector('main');
+            main.innerHTML = `
+                <div class="app-container">
+                    <div class="page-header">
+                        <h2>부캐 관리</h2>
+                        <button class="btn btn-primary" onclick="showAddCharacterModal()">
+                            <span class="icon"><img src="img/plus.svg"></span>
+                            부캐 추가
+                        </button>
+                    </div>
+                    
+                    <div class="characters-list">
+                        ${accountCharacters.map(character => `
+                            <div class="character-item">
+                                <div class="character-info">
+                                    <h3>${character.name}</h3>
+                                    <div class="character-info-details">
+                                    <p>레벨: ${character.level || '미설정'}</p>
+                                    <p>서버: ${character.server || '미설정'} - ${character.serverChannel || '미설정'}</p>
+                                    <div class="quest-summary">
+                                        <p>총 의뢰: ${getTotalQuestCount(character)}/20 (${20 - getTotalQuestCount(character)}개 남음)</p>
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" style="width: ${(getTotalQuestCount(character) / 20) * 100}%"></div>
+                                        </div>
+                                    </div>
+                                    </div>
+                                </div>
+                                <div class="character-actions">
+                                    <button class="btn btn-sm btn-gray" onclick="editCharacter('${character.id}')">편집</button>
+                                    <button class="btn btn-sm btn-gray" onclick="updateQuestCount('${character.id}')">의뢰 카운트</button>
+                                    <button class="btn btn-sm btn-danger" onclick="deleteCharacter('${character.id}')">삭제</button>
+                                </div>
+                            </div>
+                        `).join('')}
+                        
+                        ${accountCharacters.length === 0 ? `
+                            <div class="empty-state">
+                                <p>등록된 부캐가 없습니다.</p>
+                                <p>상단의 "부캐 추가" 버튼을 클릭하여 부캐를 추가해보세요.</p>
+                            </div>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+        }
+
+        // 캘린더 뷰 렌더링
+        function renderCalendarView() {
+            const main = document.querySelector('main');
+            main.innerHTML = `
+                <div class="app-container">
+                    <div class="page-header">
+                        <h2>캘린더</h2>
+                        <div class="calendar-controls">
+                            <button class="btn btn-outline" onclick="previousMonth()">
+                                <span class="icon"><img src="img/chevron-left.svg"></span>
+                                이전
+                            </button>
+                            <button class="btn btn-outline" onclick="goToToday()">
+                                오늘
+                            </button>
+                            <button class="btn btn-outline" onclick="nextMonth()">
+                                다음
+                                <span class="icon"><img src="img/chevron-right.svg"></span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="calendar-container">
+                        <div class="calendar-header">
+                            <h3 id="calendarTitle">${getCalendarTitle()}</h3>
+                            <div id="todayTaskCount" class="today-task-count"></div>
+                        </div>
+                        <div class="calendar-grid" id="calendarGrid">
+                            ${renderCalendarGrid()}
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // 오늘 완료 건수 업데이트
+            updateTodayTaskCount();
+        }
+
+        // 설정 뷰 렌더링
+        function renderSettingsView() {
+            const main = document.querySelector('main');
+            main.innerHTML = `
+                <div class="app-container">
+                    <div class="page-header">
+                        <h2>설정</h2>
+                    </div>
+                    
+                    <div class="settings-content">
+                        <div class="settings-section">
+                            <h3>데이터 관리</h3>
+                            <div class="settings-actions">
+                                <button class="btn btn-secondary" onclick="exportData()">
+                                    <span class="icon"><img src="img/download.svg"></span>
+                                    데이터 내보내기
+                                </button>
+                                <button class="btn btn-secondary" onclick="importData()">
+                                    <span class="icon"><img src="img/upload.svg"></span>
+                                    데이터 가져오기
+                                </button>
+                                <button class="btn btn-danger" onclick="clearAllData()">
+                                    <span class="icon"><img src="img/trash.svg"></span>
+                                    모든 데이터 삭제
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="settings-section">
+                            <h3>앱 정보</h3>
+                            <div class="app-info">
+                                <p><strong>제작자:</strong> 키야</p>
+                                <p><strong>버전:</strong> 1.0.0</p>
+                                <p><strong>모드:</strong> 독립 실행</p>
+                                <p><strong>데이터 저장:</strong> 브라우저 LocalStorage</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // 유틸리티 함수들
+        function getTotalQuestCount(character) {
+            if (!character.zones) return 0;
+            return Object.values(character.zones).filter(completed => completed === true).length;
+        }
+
+        // 캘린더 관련 유틸리티 함수들
+        function getCalendarTitle() {
+            const year = currentCalendarDate.getFullYear();
+            const month = currentCalendarDate.getMonth() + 1;
+            return `${year}.${month.toString().padStart(2, '0')}`;
+        }
+
+        function previousMonth() {
+            currentCalendarDate.setMonth(currentCalendarDate.getMonth() - 1);
+            renderCalendarView();
+        }
+
+        function nextMonth() {
+            currentCalendarDate.setMonth(currentCalendarDate.getMonth() + 1);
+            renderCalendarView();
+        }
+
+        function goToToday() {
+            currentCalendarDate = new Date();
+            renderCalendarView();
+        }
+
+        function renderCalendarGrid() {
+            const year = currentCalendarDate.getFullYear();
+            const month = currentCalendarDate.getMonth();
+            
+            // 월의 첫 번째 날과 마지막 날
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            
+            // 첫 번째 날의 요일 (0=일요일)
+            const firstDayOfWeek = firstDay.getDay();
+            
+            // 월의 일수
+            const daysInMonth = lastDay.getDate();
+            
+            let html = `
+                <div class="calendar-weekdays">
+                    <div class="weekday">일</div>
+                    <div class="weekday">월</div>
+                    <div class="weekday">화</div>
+                    <div class="weekday">수</div>
+                    <div class="weekday">목</div>
+                    <div class="weekday">금</div>
+                    <div class="weekday">토</div>
+                </div>
+                <div class="calendar-days">
+            `;
+            
+            // 이전 달의 빈 칸들
+            for (let i = 0; i < firstDayOfWeek; i++) {
+                html += `<div class="calendar-day other-month"></div>`;
+            }
+            
+            // 현재 달의 날짜들
+            for (let day = 1; day <= daysInMonth; day++) {
+                const date = new Date(year, month, day);
+                const activities = getActivitiesForDate(date);
+                const isToday = isSameDate(date, new Date());
+                
+                html += `
+                    <div class="calendar-day ${isToday ? 'today' : ''}" onclick="showDayDetails('${date.toISOString()}')">
+                        <div class="day-number">${day}</div>
+                        <div class="day-activities">
+                            ${renderDayActivities(activities)}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            html += '</div>';
+            return html;
+        }
+
+        function getActivitiesForDate(date) {
+            if (!selectedAccountId) return [];
+            
+            const startOfDay = new Date(date);
+            startOfDay.setHours(0, 0, 0, 0);
+            const endOfDay = new Date(date);
+            endOfDay.setHours(23, 59, 59, 999);
+            
+            return activityLogs.filter(log => {
+                if (log.accountId !== selectedAccountId) return false;
+                const logDate = new Date(log.occurredAt);
+                return logDate >= startOfDay && logDate <= endOfDay;
+            });
+        }
+
+        function renderDayActivities(activities) {
+            if (activities.length === 0) return '';
+            
+            // 부캐별로 그룹화
+            const grouped = {};
+            activities.forEach(activity => {
+                const character = characters.find(c => c.id === activity.characterId);
+                if (!character) return;
+                
+                const key = `${character.name}-${activity.location}`;
+                if (!grouped[key]) {
+                    grouped[key] = {
+                        character: character.name,
+                        location: activity.location,
+                        count: 0
+                    };
+                }
+                grouped[key].count += activity.countDelta;
+            });
+            
+            const items = Object.values(grouped).slice(0, 3); // 최대 3개만 표시
+            let html = '';
+            
+            items.forEach(item => {
+                if (item.count > 0) {
+                    html += `<div class="activity-chip">${item.character} · ${item.location} (${item.count})</div>`;
+                }
+            });
+            
+            if (Object.keys(grouped).length > 3) {
+                const remaining = Object.keys(grouped).length - 3;
+                html += `<div class="activity-chip more">+${remaining}</div>`;
+            }
+            
+            return html;
+        }
+
+        function isSameDate(date1, date2) {
+            return date1.getFullYear() === date2.getFullYear() &&
+                   date1.getMonth() === date2.getMonth() &&
+                   date1.getDate() === date2.getDate();
+        }
+
+        function showDayDetails(dateString) {
+            const date = new Date(dateString);
+            const activities = getActivitiesForDate(date);
+            
+            if (activities.length === 0) {
+                alert(`${date.getMonth() + 1}월 ${date.getDate()}일에는 활동 기록이 없습니다.`);
+                return;
+            }
+            
+            let content = `
+                <h4 class="day-title">${date.getMonth() + 1}월 ${date.getDate()}일 활동 기록</h4>
+                <div class="day-activities-list" style="max-height: 500px; overflow-y: auto;">
+            `;
+            
+            // 부캐별로 그룹화
+            const characterGroups = {};
+            activities.forEach(activity => {
+                const character = characters.find(c => c.id === activity.characterId);
+                if (!character) return;
+                
+                if (!characterGroups[character.name]) {
+                    characterGroups[character.name] = {
+                        character: character.name,
+                        totalCount: 0,
+                        locations: {}
+                    };
+                }
+                
+                if (!characterGroups[character.name].locations[activity.location]) {
+                    characterGroups[character.name].locations[activity.location] = [];
+                }
+                
+                characterGroups[character.name].locations[activity.location].push(activity);
+                characterGroups[character.name].totalCount += activity.countDelta;
+            });
+            
+            // 부캐별 박스 생성
+            Object.values(characterGroups).forEach(characterGroup => {
+                content += `
+                    <div class="character-activity-box" style="
+                        background: #F7F8F9;
+                        border: 1px solid #e5e7eb;
+                        border-radius: 12px;
+                        padding: 16px;
+                        margin-bottom: 12px;
+                    ">
+                        <div class="character-header" style="
+                            display: flex;
+                            justify-content: space-between;
+                            align-items: center;
+                            margin-bottom: 12px;
+                            padding-bottom: 8px;
+                            border-bottom: 1px solid #e5e7eb;
+                        ">
+                            <h5 style="margin: 0; font-size: 16px; font-weight: 600; color: #374151;">${characterGroup.character}</h5>
+                            <span style="
+                                background: #0D6DFD;
+                                color: white;
+                                padding: 4px 12px;
+                                border-radius: 20px;
+                                font-size: 14px;
+                                font-weight: 600;
+                            ">총 ${characterGroup.totalCount}건</span>
+                        </div>
+                        <div class="location-list">
+                `;
+                
+                // 주둔지별 활동 표시
+                Object.entries(characterGroup.locations).forEach(([location, locationActivities]) => {
+                    const locationTotal = locationActivities.reduce((sum, act) => sum + act.countDelta, 0);
+                    if (locationTotal > 0) {
+                        content += `
+                            <div class="location-item" style="
+                                display: flex;
+                                justify-content: space-between;
+                                align-items: center;
+                                padding: 8px 0;
+                                border-bottom: 1px solid #f1f5f9;
+                            ">
+                                <span style="font-size: 14px; color: #64748b;">${location}</span>
+                                <div class="time-list" style="display: flex; gap: 8px; flex-wrap: wrap;">
+                        `;
+                        
+                        locationActivities.forEach(activity => {
+                            if (activity.countDelta > 0) {
+                                const time = new Date(activity.occurredAt).toLocaleTimeString('ko-KR', {
+                                    hour: '2-digit',
+                                    minute: '2-digit'
+                                });
+                                content += `
+                                    <span style="
+                                        background: #e0f2fe;
+                                        color: #0369a1;
+                                        padding: 2px 8px;
+                                        border-radius: 4px;
+                                        font-size: 12px;
+                                        font-weight: 500;
+                                    ">${time}</span>
+                                `;
+                            }
+                        });
+                        
+                        content += `
+                                </div>
+                            </div>
+                        `;
+                    }
+                });
+                
+                content += `
+                        </div>
+                    </div>
+                `;
+            });
+            
+            content += '</div>';
+            
+            showModal('일일 활동 기록', content);
+        }
+
+        // Activity Log 생성 함수
+        function createActivityLog(characterId, location, countDelta, occurredAt = null) {
+            if (!selectedAccountId) return;
+            
+            const now = occurredAt || new Date();
+            const activity = {
+                id: Date.now().toString(),
+                type: 'quest',
+                accountId: selectedAccountId,
+                characterId: characterId,
+                location: location,
+                countDelta: countDelta,
+                occurredAt: now.getTime(),
+                createdAt: now.getTime()
+            };
+            
+            activityLogs.push(activity);
+            saveData();
+            
+            // 캘린더 뷰인 경우 오늘 완료 건수 업데이트
+            if (currentView === 'calendar') {
+                updateTodayTaskCount();
+            }
+        }
+
+        // 홈 화면 표시
+        function showHomeScreen() {
+            const accounts = JSON.parse(localStorage.getItem('prasia_accounts') || '[]');
+            const settings = JSON.parse(localStorage.getItem('prasia_settings') || '{}');
+            const selectedAccount = accounts.find(acc => acc.id === settings.selectedAccountId);
+            
+            const main = document.querySelector('main');
+            main.innerHTML = `
+                <div class="app-container">
+                    <div class="app-header">
+                        <h1>🏰 부캐맹약작</h1>
+                        <p>리네아 맹약 준비 To-do 웹앱</p>
+                    </div>
+                    
+                    <div class="app-content">
+                        ${selectedAccount ? `
+                            <div class="account-summary">
+                                <h2>📊 계정 현황</h2>
+                                <div class="account-card">
+                                    <h3>${selectedAccount.name} ${selectedAccount.isPrimary ? '<span class="badge primary">본계정</span>' : ''}</h3>
+                                    <p>맹약 증서: ${selectedAccount.covenants.purchased.length}개 구매 / ${selectedAccount.covenants.total}개 전체</p>
+                                </div>
+                            </div>
+                            
+                            <div class="quick-actions">
+                                <button class="btn btn-primary" onclick="addCharacter()">
+                                    <span class="icon">⚔️</span>
+                                    부캐 추가하기
+                                </button>
+                                <button class="btn btn-secondary" onclick="manageAccounts()">
+                                    <span class="icon">👥</span>
+                                    계정 관리
+                                </button>
+                            </div>
+                        ` : `
+                            <div class="welcome-card">
+                                <h2>계정을 먼저 추가해주세요 :-)</h2>
+                                <p>계정은 맹약 증서 구매 현황을 관리합니다.</p>
+                                <p>이후 부캐를 연결해 의뢰·레벨을 추적하세요.</p>
+                                
+                                <div class="quick-actions">
+                                    <button class="btn btn-primary" onclick="addAccount()">
+                                        <span class="icon">👤</span>
+                                        계정 추가
+                                    </button>
+                                </div>
+                            </div>
+                        `}
+                        
+                        <div class="status-info">
+                            <div class="status-item">
+                                <span class="status-indicator status-online"></span>
+                                <span class="status-text">독립 실행 모드</span>
+                            </div>
+                            <div class="status-item">
+                                <span class="status-indicator status-success"></span>
+                                <span class="status-text">데이터 저장 준비 완료</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // 모달 관련 함수들
+        function showModal(title, content) {
+            document.getElementById('modalTitle').textContent = title;
+            document.getElementById('modalContent').innerHTML = content;
+            document.getElementById('modalOverlay').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('modalOverlay').style.display = 'none';
+        }
+
+        // 모달 외부 클릭 시 닫기
+        document.addEventListener('click', function(e) {
+            if (e.target.id === 'modalOverlay') {
+                closeModal();
+            }
+        });
+
+        // 계정 추가 모달
+        function showAddAccountModal() {
+            const content = `
+                <form id="addAccountForm">
+                    <div class="form-group">
+                        <label class="form-label" for="accountName">계정 이름</label>
+                        <input type="text" id="accountName" class="form-input" placeholder="계정 이름을 입력하세요" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="checkbox-item">
+                            <input type="checkbox" id="isPrimary" ${accounts.length === 0 ? 'checked' : ''}>
+                            본계정으로 설정
+                        </label>
+                    </div>
+                </form>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-cancel" onclick="closeModal()">취소</button>
+                    <button type="button" class="btn btn-primary" onclick="saveAccount()">저장</button>
+                </div>
+            `;
+            showModal('계정 추가', content);
+        }
+
+        function saveAccount() {
+            const name = document.getElementById('accountName').value.trim();
+            const isPrimary = document.getElementById('isPrimary').checked;
+            
+            if (!name) {
+                alert('계정 이름을 입력해주세요.');
+                return;
+            }
+
+            const newAccount = {
+                id: Date.now().toString(),
+                name: name,
+                isPrimary: isPrimary,
+                covenants: { purchased: [], total: 16 },
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString()
+            };
+            
+            accounts.push(newAccount);
+            selectedAccountId = newAccount.id;
+            settings.selectedAccountId = newAccount.id;
+            saveData();
+            
+            updateAccountSelector();
+            closeModal();
+            navigateTo('home');
+        }
+
+        // 부캐 추가 모달
+        function showAddCharacterModal() {
+            if (!selectedAccountId) {
+                alert('먼저 계정을 선택해주세요.');
+                return;
+            }
+
+            const serverOptions = Object.keys(SERVERS).map(server => 
+                `<option value="${server}">${server}</option>`
+            ).join('');
+
+            const content = `
+                <form id="addCharacterForm">
+                    <div class="form-group">
+                        <label class="form-label" for="characterName">부캐 이름</label>
+                        <input type="text" id="characterName" class="form-input" placeholder="부캐 이름을 입력하세요" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="characterServer">서버</label>
+                            <select id="characterServer" class="form-select" onchange="updateChannelOptions(this.value)" required>
+                                <option value="">서버를 선택하세요</option>
+                                ${serverOptions}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="characterChannel">채널</label>
+                            <select id="characterChannel" class="form-select" required disabled>
+                                <option value="">먼저 서버를 선택하세요</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="characterLevel">레벨 (선택사항)</label>
+                        <input type="number" id="characterLevel" class="form-input" placeholder="레벨을 입력하세요" min="1" max="100">
+                    </div>
+                </form>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-cancel" onclick="closeModal()">취소</button>
+                    <button type="button" class="btn btn-primary" onclick="saveCharacter()">저장</button>
+                </div>
+            `;
+            showModal('부캐 추가', content);
+        }
+
+        function updateChannelOptions(selectedServer) {
+            const channelSelect = document.getElementById('characterChannel');
+            
+            if (selectedServer && SERVERS[selectedServer]) {
+                const channels = SERVERS[selectedServer];
+                channelSelect.innerHTML = '<option value="">채널을 선택하세요</option>' + channels.map(channel => 
+                    `<option value="${channel}">${channel}</option>`
+                ).join('');
+                channelSelect.disabled = false;
+            } else {
+                channelSelect.innerHTML = '<option value="">먼저 서버를 선택하세요</option>';
+                channelSelect.disabled = true;
+            }
+        }
+
+        function saveCharacter() {
+            const name = document.getElementById('characterName').value.trim();
+            const server = document.getElementById('characterServer').value;
+            const channel = document.getElementById('characterChannel').value;
+            const level = document.getElementById('characterLevel').value;
+            
+            if (!name) {
+                alert('부캐 이름을 입력해주세요.');
+                return;
+            }
+            
+            if (!server) {
+                alert('서버를 선택해주세요.');
+                return;
+            }
+            
+            if (!channel) {
+                alert('채널을 선택해주세요.');
+                return;
+            }
+            
+            const newCharacter = {
+                id: Date.now().toString(),
+                name: name,
+                accountId: selectedAccountId,
+                server: server,
+                channel: channel,
+                level: level ? parseInt(level) : null,
+                zones: {},
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString()
+            };
+            
+            characters.push(newCharacter);
+            saveData();
+            closeModal();
+            navigateTo('characters');
+        }
+
+        // 부캐 편집
+        function editCharacter(characterId) {
+            const character = characters.find(c => c.id === characterId);
+            if (!character) return;
+
+            showCharacterEditModal(characterId);
+        }
+
+        // 부캐 편집 모달 표시
+        function showCharacterEditModal(characterId) {
+            const character = characters.find(c => c.id === characterId);
+            if (!character) return;
+
+            // 기존 모달이 있으면 제거
+            const existingModal = document.getElementById('characterEditModal');
+            if (existingModal) {
+                existingModal.remove();
+            }
+
+            // 편집 모달 생성
+            const modal = document.createElement('div');
+            modal.id = 'characterEditModal';
+            modal.className = 'modal-overlay';
+            modal.innerHTML = `
+                <div class="modal">
+                    <div class="modal-header">
+                        <h3 class="modal-title">부캐 편집</h3>
+                        <button class="modal-close" type="button" onclick="closeCharacterEditModal()">&times;</button>
+                    </div>
+                    <div class="modal-content">
+                        <form id="characterEditForm">
+                            <div class="form-group">
+                                <label for="editCharacterName" class="form-label">부캐 이름</label>
+                                <input type="text" id="editCharacterName" class="form-input" value="${character.name}" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="editCharacterLevel" class="form-label">레벨</label>
+                                <input type="number" id="editCharacterLevel" class="form-input" value="${character.level || 1}" min="1" max="100" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="editCharacterServer" class="form-label">서버</label>
+                                <select id="editCharacterServer" class="form-select" onchange="updateChannelOptionsEdit(this.value)" required>
+                                    <option value="">서버를 선택하세요</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="editCharacterChannel" class="form-label">채널</label>
+                                <select id="editCharacterChannel" class="form-select" required>
+                                    <option value="">채널을 선택하세요</option>
+                                </select>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" onclick="closeCharacterEditModal()">취소</button>
+                        <button type="button" class="btn btn-primary" onclick="saveCharacterEdit('${characterId}')">저장</button>
+                    </div>
+                </div>
+            `;
+
+            document.body.appendChild(modal);
+
+            // 서버 옵션 채우기
+            populateServerOptions();
+            
+            // 현재 서버 선택
+            const serverSelect = document.getElementById('editCharacterServer');
+            serverSelect.value = character.server || '';
+            
+            // 채널 옵션 업데이트
+            updateChannelOptionsEdit(character.server || '');
+            
+            // 현재 채널 값 설정
+            setTimeout(() => {
+                const channelSelect = document.getElementById('editCharacterChannel');
+                if (channelSelect && character.channel) {
+                    channelSelect.value = character.channel;
+                }
+            }, 100);
+            
+            
+            // 모달 배경 클릭으로 닫기
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    closeCharacterEditModal();
+                }
+            });
+            
+            // ESC 키로 닫기
+            const handleEscKey = (e) => {
+                if (e.key === 'Escape') {
+                    closeCharacterEditModal();
+                    document.removeEventListener('keydown', handleEscKey);
+                }
+            };
+            document.addEventListener('keydown', handleEscKey);
+        }
+
+        // 서버 옵션 채우기
+        function populateServerOptions() {
+            const serverSelect = document.getElementById('editCharacterServer');
+            if (!serverSelect) return;
+
+            // 기존 옵션 제거 (첫 번째 옵션 제외)
+            while (serverSelect.children.length > 1) {
+                serverSelect.removeChild(serverSelect.lastChild);
+            }
+
+            // 서버 옵션 추가 (SERVERS 상수 사용)
+            Object.keys(SERVERS).forEach(serverName => {
+                const option = document.createElement('option');
+                option.value = serverName;
+                option.textContent = serverName;
+                serverSelect.appendChild(option);
+            });
+        }
+
+        // 채널 옵션 업데이트 (편집 모달용)
+        function updateChannelOptionsEdit(serverName) {
+            const channelSelect = document.getElementById('editCharacterChannel');
+            if (!channelSelect) return;
+
+            // 기존 옵션 제거 (첫 번째 옵션 제외)
+            while (channelSelect.children.length > 1) {
+                channelSelect.removeChild(channelSelect.lastChild);
+            }
+
+            if (serverName && SERVERS[serverName]) {
+                SERVERS[serverName].forEach(channel => {
+                    const option = document.createElement('option');
+                    option.value = channel;
+                    option.textContent = channel;
+                    channelSelect.appendChild(option);
+                });
+            }
+        }
+
+        // 부캐 편집 저장
+        function saveCharacterEdit(characterId) {
+            const name = document.getElementById('editCharacterName').value.trim();
+            const level = parseInt(document.getElementById('editCharacterLevel').value);
+            const server = document.getElementById('editCharacterServer').value;
+            const channel = document.getElementById('editCharacterChannel').value;
+
+            // 유효성 검사
+            if (!name) {
+                alert('부캐 이름을 입력해주세요.');
+                return;
+            }
+            if (!level || level < 1 || level > 100) {
+                alert('레벨은 1-100 사이의 숫자여야 합니다.');
+                return;
+            }
+            if (!server) {
+                alert('서버를 선택해주세요.');
+                return;
+            }
+            if (!channel) {
+                alert('채널을 선택해주세요.');
+                return;
+            }
+
+            try {
+                const character = characters.find(c => c.id === characterId);
+                if (character) {
+                    character.name = name;
+                    character.level = level;
+                    character.server = server;
+                    character.serverChannel = channel;
+                character.updatedAt = new Date().toISOString();
+                    
+                saveData();
+                    closeCharacterEditModal();
+                navigateTo('characters');
+                    showToast('부캐 정보가 수정되었습니다.', 'success');
+                }
+            } catch (error) {
+                console.error('부캐 편집 실패:', error);
+                alert('부캐 정보 수정 중 오류가 발생했습니다.');
+            }
+        }
+
+        // 부캐 편집 모달 닫기
+        function closeCharacterEditModal() {
+            const modal = document.getElementById('characterEditModal');
+            if (modal) {
+                modal.remove();
+            }
+        }
+
+        // 의뢰 카운트 업데이트 (체크박스 방식)
+        function updateQuestCount(characterId) {
+            const character = characters.find(c => c.id === characterId);
+            if (!character) return;
+
+            if (!character.zones) character.zones = {};
+
+            const currentCompleted = getTotalQuestCount(character);
+            
+            // 지역별 그룹화된 주둔지 표시
+            const regionGroups = Object.entries(STRONGHOLDS).map(([region, strongholds]) => {
+                const regionCheckboxes = strongholds.map(stronghold => {
+                    const isCompleted = character.zones[stronghold] === true;
+                    return `
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="stronghold_${stronghold}" value="${stronghold}" ${isCompleted ? 'checked' : ''} onchange="updateQuestCounter()">
+                            <label for="stronghold_${stronghold}">${stronghold}</label>
+                        </div>
+                    `;
+                }).join('');
+
+                return `
+                    <div class="region-group" data-region="${region}">
+                        <h4 class="region-title">${region}</h4>
+                        <div class="region-strongholds">
+                            ${regionCheckboxes}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            // 오름차순/내림차순용 플랫 리스트
+            const allStrongholds = [];
+            Object.entries(STRONGHOLDS).forEach(([region, strongholds]) => {
+                strongholds.forEach(stronghold => {
+                    allStrongholds.push({ region, stronghold });
+                });
+            });
+
+            const flatCheckboxes = allStrongholds.map(({ region, stronghold }) => {
+                const isCompleted = character.zones[stronghold] === true;
+                return `
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="stronghold_${stronghold}" value="${stronghold}" ${isCompleted ? 'checked' : ''} onchange="updateQuestCounter()">
+                        <label for="stronghold_${stronghold}">${stronghold}</label>
+                    </div>
+                `;
+            }).join('');
+
+            const content = `
+                <div class="form-group">
+                    <label class="form-label">주둔지 의뢰 완료 현황</label>
+                    <div class="form-home">
+                        <strong>완료 현황: <span id="questCounter">${currentCompleted}</span>/20</strong>
+                        <div class="progress-bar" style="margin-top: 8px;">
+                            <div class="progress-fill" style="width: ${(currentCompleted / 20) * 100}%"></div>
+                        </div>
+                    </div>
+                    <div class="sort-filter">
+                        <label>정렬 방식:</label>
+                        <select id="regionSort" onchange="sortStrongholds()">
+                            <option value="default">지역별 그룹</option>
+                            <option value="asc">오름차순</option>
+                            <option value="desc">내림차순</option>
+                        </select>
+                    </div>
+                    <div class="checkbox-grid" id="strongholdGrid" style="max-height: 400px;">
+                        <div id="regionGroups">${regionGroups}</div>
+                        <div id="flatList" style="display: none;">${flatCheckboxes}</div>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-cancel" onclick="closeModal()">취소</button>
+                    <button type="button" class="btn btn-primary" onclick="saveQuestCount('${characterId}')">저장</button>
+                </div>
+            `;
+            showModal('의뢰 완료 현황 관리', content);
+        }
+
+        function updateQuestCounter() {
+            const checkboxes = document.querySelectorAll('#strongholdGrid input[type="checkbox"]:checked');
+            const completedCount = checkboxes.length;
+            const counter = document.getElementById('questCounter');
+            const progressFill = document.querySelector('#strongholdGrid').closest('.modal').querySelector('.progress-fill');
+            
+            if (counter) {
+                counter.textContent = completedCount;
+            }
+            
+            if (progressFill) {
+                progressFill.style.width = `${(completedCount / 20) * 100}%`;
+            }
+        }
+
+        function sortStrongholds() {
+            const sortType = document.getElementById('regionSort').value;
+            const regionGroups = document.getElementById('regionGroups');
+            const flatList = document.getElementById('flatList');
+            
+            if (sortType === 'default') {
+                regionGroups.style.display = 'block';
+                flatList.style.display = 'none';
+            } else {
+                regionGroups.style.display = 'none';
+                flatList.style.display = 'block';
+                
+                const checkboxes = Array.from(flatList.querySelectorAll('.checkbox-item'));
+                let sortedCheckboxes;
+                
+                if (sortType === 'asc') {
+                    sortedCheckboxes = checkboxes.sort((a, b) => {
+                        const labelA = a.querySelector('label').textContent;
+                        const labelB = b.querySelector('label').textContent;
+                        return labelA.localeCompare(labelB);
+                    });
+                } else if (sortType === 'desc') {
+                    sortedCheckboxes = checkboxes.sort((a, b) => {
+                        const labelA = a.querySelector('label').textContent;
+                        const labelB = b.querySelector('label').textContent;
+                        return labelB.localeCompare(labelA);
+                    });
+                }
+                
+                flatList.innerHTML = '';
+                sortedCheckboxes.forEach(item => flatList.appendChild(item));
+            }
+        }
+
+        function saveQuestCount(characterId) {
+            const character = characters.find(c => c.id === characterId);
+            const checkboxes = document.querySelectorAll('#strongholdGrid input[type="checkbox"]');
+            
+            // 이전 상태와 비교하여 변경사항 추적
+            const previousZones = { ...character.zones };
+            
+            // 모든 주둔지를 false로 초기화
+            Object.keys(STRONGHOLDS).forEach(region => {
+                STRONGHOLDS[region].forEach(stronghold => {
+                    character.zones[stronghold] = false;
+                });
+            });
+            
+            // 체크된 주둔지만 true로 설정하고 Activity Log 생성
+            checkboxes.forEach(checkbox => {
+                if (checkbox.checked) {
+                    character.zones[checkbox.value] = true;
+                    
+                    // 새로 완료된 주둔지인 경우 Activity Log 생성
+                    if (!previousZones[checkbox.value]) {
+                        createActivityLog(characterId, checkbox.value, 1);
+                    }
+                } else if (previousZones[checkbox.value]) {
+                    // 완료 해제된 주둔지인 경우 Activity Log 생성 (음수)
+                    createActivityLog(characterId, checkbox.value, -1);
+                }
+            });
+            
+            character.updatedAt = new Date().toISOString();
+            saveData();
+            closeModal();
+            navigateTo('characters');
+        }
+
+        // 부캐 삭제
+        function deleteCharacter(characterId) {
+            if (confirm('정말로 이 부캐를 삭제하시겠습니까?')) {
+                characters = characters.filter(c => c.id !== characterId);
+                saveData();
+                navigateTo('characters');
+            }
+        }
+
+        // 계정 편집
+        function editAccount(accountId) {
+            const account = accounts.find(a => a.id === accountId);
+            if (!account) return;
+
+            const newName = prompt('계정 이름을 수정하세요:', account.name);
+            if (newName && newName.trim()) {
+                account.name = newName.trim();
+                account.updatedAt = new Date().toISOString();
+                saveData();
+                updateAccountSelector();
+                navigateTo('accounts');
+            }
+        }
+
+        // 아코디언 토글
+        function toggleCovenantAccordion(accountId) {
+            const content = document.getElementById(`content_${accountId}`);
+            const arrow = document.getElementById(`arrow_${accountId}`);
+            
+            if (content.style.display === 'none') {
+                content.style.display = 'block';
+                arrow.classList.add('rotated');
+            } else {
+                content.style.display = 'none';
+                arrow.classList.remove('rotated');
+            }
+        }
+
+        // 맹약 증서 카운트 업데이트
+        function updateCovenantCount(accountId) {
+            const account = accounts.find(a => a.id === accountId);
+            if (!account) return;
+
+            const checkboxes = document.querySelectorAll(`input[id^="covenant_${accountId}_"]:checked`);
+            const purchased = Array.from(checkboxes).map(cb => cb.value);
+            
+            account.covenants.purchased = purchased;
+            account.updatedAt = new Date().toISOString();
+            saveData();
+            
+            // 아코디언 헤더의 카운트 업데이트
+            const countElement = document.querySelector(`#content_${accountId}`).previousElementSibling.querySelector('.accordion-count');
+            if (countElement) {
+                countElement.textContent = `${purchased.length}/${account.covenants.total}개`;
+            }
+        }
+
+        // 계정 삭제
+        function deleteAccount(accountId) {
+            if (confirm('정말로 이 계정을 삭제하시겠습니까?\n연결된 부캐도 함께 삭제됩니다.')) {
+                accounts = accounts.filter(a => a.id !== accountId);
+                characters = characters.filter(c => c.accountId !== accountId);
+                
+                if (selectedAccountId === accountId) {
+                    selectedAccountId = accounts.length > 0 ? accounts[0].id : null;
+                    settings.selectedAccountId = selectedAccountId;
+                }
+                
+                saveData();
+                updateAccountSelector();
+                navigateTo('accounts');
+            }
+        }
+
+        // 캘린더 데이터 내보내기
+        function exportCalendarData() {
+            const accountActivities = activityLogs.filter(log => log.accountId === selectedAccountId);
+            if (accountActivities.length === 0) {
+                alert('내보낼 활동 기록이 없습니다.');
+                return;
+            }
+
+            const data = {
+                activities: accountActivities,
+                characters: characters.filter(char => char.accountId === selectedAccountId),
+                exportDate: new Date().toISOString(),
+                timezone: 'Asia/Seoul'
+            };
+            
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `부캐맹약작_활동기록_${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // 데이터 내보내기
+        function exportData() {
+            const data = {
+                accounts,
+                characters,
+                settings,
+                activities: activityLogs,
+                exportDate: new Date().toISOString()
+            };
+            
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `부캐맹약작_데이터_${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // 데이터 가져오기
+        function importData() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        try {
+                            const data = JSON.parse(e.target.result);
+                            if (confirm('기존 데이터를 모두 덮어쓰시겠습니까?')) {
+                                accounts = data.accounts || [];
+                                characters = data.characters || [];
+                                settings = data.settings || {};
+                                activityLogs = data.activities || [];
+                                selectedAccountId = settings.selectedAccountId;
+                                saveData();
+                                updateAccountSelector();
+                                navigateTo('home');
+                                alert('데이터를 성공적으로 가져왔습니다.');
+                            }
+                        } catch (error) {
+                            alert('파일 형식이 올바르지 않습니다.');
+                        }
+                    };
+                    reader.readAsText(file);
+                }
+            };
+            input.click();
+        }
+
+        // 모든 데이터 삭제
+        function clearAllData() {
+            if (confirm('정말로 모든 데이터를 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.')) {
+                localStorage.removeItem('prasia_accounts');
+                localStorage.removeItem('prasia_characters');
+                localStorage.removeItem('prasia_settings');
+                localStorage.removeItem('prasia_activity');
+                accounts = [];
+                characters = [];
+                settings = {};
+                activityLogs = [];
+                selectedAccountId = null;
+                updateAccountSelector();
+                showOnboarding();
+                alert('모든 데이터가 삭제되었습니다.');
+            }
+        }
+
+        // 상태 표시 업데이트
+        function updateStatus() {
+            const indicator = document.getElementById('statusIndicator');
+            const text = document.getElementById('statusText');
+            
+            if (indicator && text) {
+                indicator.className = 'status-indicator status-online';
+                text.textContent = '독립 실행 모드 (온라인)';
+            }
+        }
+
+        // 데모 데이터 생성 (테스트용)
+        function createDemoData() {
+            if (activityLogs.length > 0) return; // 이미 데이터가 있으면 생성하지 않음
+            
+            const today = new Date();
+            const yesterday = new Date(today);
+            yesterday.setDate(yesterday.getDate() - 1);
+            const twoDaysAgo = new Date(today);
+            twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
+            
+            // 데모 Activity Log 생성
+            const demoActivities = [
+                {
+                    id: 'demo1',
+                    type: 'quest',
+                    accountId: selectedAccountId,
+                    characterId: characters[0]?.id,
+                    location: '파도맞이 주둔지',
+                    countDelta: 1,
+                    occurredAt: today.getTime(),
+                    createdAt: today.getTime()
+                },
+                {
+                    id: 'demo2',
+                    type: 'quest',
+                    accountId: selectedAccountId,
+                    characterId: characters[0]?.id,
+                    location: '황금항 요새',
+                    countDelta: 1,
+                    occurredAt: yesterday.getTime(),
+                    createdAt: yesterday.getTime()
+                },
+                {
+                    id: 'demo3',
+                    type: 'quest',
+                    accountId: selectedAccountId,
+                    characterId: characters[1]?.id,
+                    location: '서리절벽 주둔지',
+                    countDelta: 1,
+                    occurredAt: twoDaysAgo.getTime(),
+                    createdAt: twoDaysAgo.getTime()
+                }
+            ];
+            
+            activityLogs.push(...demoActivities);
+            saveData();
+        }
+
+        // 오늘 완료된 할일 수 업데이트
+        function updateTodayTaskCount() {
+            const today = new Date();
+            const todayString = today.toDateString();
+            
+            // 오늘 완료된 의뢰 수 계산 (양수 countDelta만 카운트)
+            const todayCompletedTasks = activityLogs.filter(activity => {
+                if (!activity.occurredAt) return false;
+                if (activity.countDelta <= 0) return false; // 양수만 카운트 (완료)
+                if (activity.accountId !== selectedAccountId) return false; // 현재 계정만
+                
+                const activityDate = new Date(activity.occurredAt);
+                return activityDate.toDateString() === todayString;
+            });
+            
+            
+            // 오늘 할일 수 표시 요소 찾기
+            const todayCountElement = document.getElementById('todayTaskCount');
+            if (todayCountElement) {
+                // 총 완료 건수만 표시
+                const totalCount = todayCompletedTasks.reduce((sum, activity) => sum + activity.countDelta, 0);
+                
+                todayCountElement.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span style="font-size: 14px; color: #374151;">오늘 총 완료 갯수:</span>
+                        <span style="background: #0D6DFD; color: white; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 600;">${totalCount}건</span>
+                    </div>
+                `;
+                
+                // 스타일 적용
+                todayCountElement.style.cssText = `
+                    background: #f8fafc;
+                    border: 1px solid #e5e7eb;
+                    color: #374151;
+                    padding: 12px 16px;
+                    border-radius: 12px;
+                    font-size: 14px;
+                    margin-top: 10px;
+                    display: inline-block;
+                `;
+            }
+        }
+
+        // 토스트 메시지 표시 함수
+        function showToast(message, type = 'info') {
+            // 기존 토스트 제거
+            const existingToast = document.querySelector('.toast');
+            if (existingToast) {
+                existingToast.remove();
+            }
+
+            // 토스트 생성
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            toast.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${type === 'success' ? '#059669' : type === 'error' ? '#dc2626' : '#0D6DFD'};
+                color: white;
+                padding: 12px 20px;
+                border-radius: 6px;
+                font-size: 14px;
+                font-weight: 500;
+                z-index: 10000;
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+                transform: translateX(100%);
+                transition: transform 0.3s ease;
+            `;
+            toast.textContent = message;
+
+            document.body.appendChild(toast);
+
+            // 애니메이션
+            setTimeout(() => {
+                toast.style.transform = 'translateX(0)';
+            }, 100);
+
+            // 3초 후 제거
+            setTimeout(() => {
+                toast.style.transform = 'translateX(100%)';
+                setTimeout(() => {
+                    if (toast.parentNode) {
+                        toast.parentNode.removeChild(toast);
+                    }
+                }, 300);
+            }, 3000);
+        }
+
+        // 페이지 로드 시 상태 업데이트
+        document.addEventListener('DOMContentLoaded', function() {
+            updateStatus();
+        });
+    </script>
+</body>
+</html>
