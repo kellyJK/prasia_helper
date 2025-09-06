@@ -3,9 +3,9 @@
 @charset "utf-8";
 @font-face {
     font-family: "NanumSquareNeo";
-    src: url("../font/NanumSquareNeoTTF-bRg.woff2") format("woff2"),
-    url("../font/NanumSquareNeoTTF-bRg.woff") format("woff"),
-    url("../font/NanumSquareNeoOTF-bRg.otf") format("opentype");
+    src: url("font/NanumSquareNeoTTF-bRg.woff2") format("woff2"),
+    url("font/NanumSquareNeoTTF-bRg.woff") format("woff"),
+    url("font/NanumSquareNeoOTF-bRg.otf") format("opentype");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -13,9 +13,9 @@
 
 @font-face {
   font-family: "NanumSquareNeo";
-  src: url("../font/NanumSquareNeoTTF-cBd.woff2") format("woff2"),
-    url("../font/NanumSquareNeoTTF-cBd.woff") format("woff"),
-    url("../font/NanumSquareNeoOTF-cBd.otf") format("opentype");
+  src: url("font/NanumSquareNeoTTF-cBd.woff2") format("woff2"),
+    url("font/NanumSquareNeoTTF-cBd.woff") format("woff"),
+    url("font/NanumSquareNeoOTF-cBd.otf") format("opentype");
   font-weight: 700;
   font-style: normal;
   font-display: swap;
@@ -23,9 +23,9 @@
 
 @font-face {
   font-family: "NanumSquareNeo";
-  src: url("../font/NanumSquareNeoTTF-dEb.woff2") format("woff2"),
-    url("../font/NanumSquareNeoTTF-dEb.woff") format("woff"),
-    url("../font/NanumSquareNeoOTF-dEb.otf") format("opentype");
+  src: url("font/NanumSquareNeoTTF-dEb.woff2") format("woff2"),
+    url("font/NanumSquareNeoTTF-dEb.woff") format("woff"),
+    url("font/NanumSquareNeoOTF-dEb.otf") format("opentype");
   font-weight: 800;
   font-style: normal;
   font-display: swap;
@@ -33,9 +33,9 @@
 
 @font-face {
   font-family: "NanumSquareNeo";
-  src: url("../font/NanumSquareNeoTTF-eHv.woff2") format("woff2"),
-    url("../font/NanumSquareNeoTTF-eHv.woff") format("woff"),
-    url("../font/NanumSquareNeoOTF-eHv.otf") format("opentype");
+  src: url("font/NanumSquareNeoTTF-eHv.woff2") format("woff2"),
+    url("font/NanumSquareNeoTTF-eHv.woff") format("woff"),
+    url("font/NanumSquareNeoOTF-eHv.otf") format("opentype");
   font-weight: 900;
   font-style: normal;
   font-display: swap;
