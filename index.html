@@ -330,6 +330,7 @@
                                 <h3>${selectedAccount.name} ${selectedAccount.isPrimary ? '<span class="badge primary">본계정</span>' : ''}</h3>
                                 <p>맹약 증서: ${selectedAccount.covenants.purchased.length}개 구매 / ${selectedAccount.covenants.total}개 전체</p>
                                 <button class="btn" onclick="navigateTo('accounts')">
+                                    계정관리
                                     <span class="icon"><img src="img/chevron-right.svg"></span>
                                     
                                 </button>
@@ -361,7 +362,7 @@
                                 </div>
                             ` : `
                                 <div class="empty-state">
-                                    <p>등록된 부캐가 없습니다.</p>
+                                    <p>등록된 부캐가 없습니다. </p>
                                     <p>상단의 "부캐 추가하기" 버튼을 클릭하여 부캐를 추가해보세요.</p>
                                 </div>
                             `}
@@ -426,7 +427,7 @@
                                         <div class="accordion-content" id="content_${account.id}" style="display: none;">
                                             <div class="covenant-groups">
                                                 <div class="covenant-group">
-                                                    <h4>1그룹</h4>
+                                                    <h4>대형파벌</h4>
                                                     <div class="covenant-checkboxes">
                                                         ${FACTIONS.slice(0, 4).map(faction => {
                                                             const isPurchased = account.covenants.purchased.includes(faction);
@@ -440,7 +441,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="covenant-group">
-                                                    <h4>2그룹</h4>
+                                                    <h4>얽힘파벌</h4>
                                                     <div class="covenant-checkboxes">
                                                         ${FACTIONS.slice(4, 10).map(faction => {
                                                             const isPurchased = account.covenants.purchased.includes(faction);
@@ -454,7 +455,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="covenant-group">
-                                                    <h4>3그룹</h4>
+                                                    <h4>심연파벌</h4>
                                                     <div class="covenant-checkboxes">
                                                         ${FACTIONS.slice(10, 16).map(faction => {
                                                             const isPurchased = account.covenants.purchased.includes(faction);
@@ -523,7 +524,7 @@
                         
                         ${accountCharacters.length === 0 ? `
                             <div class="empty-state">
-                                <p>등록된 부캐가 없습니다.</p>
+                                <p>등록된 부캐가 없습니다. </p>
                                 <p>상단의 "부캐 추가" 버튼을 클릭하여 부캐를 추가해보세요.</p>
                             </div>
                         ` : ''}
@@ -603,7 +604,6 @@
                             <div class="app-info">
                                 <p><strong>제작자:</strong> 키야</p>
                                 <p><strong>버전:</strong> 1.0.0</p>
-                                <p><strong>모드:</strong> 독립 실행</p>
                                 <p><strong>데이터 저장:</strong> 브라우저 LocalStorage</p>
                             </div>
                         </div>
@@ -1738,7 +1738,7 @@
                 
                 // 스타일 적용
                 todayCountElement.style.cssText = `
-                    background: #f8fafc;
+                    background: #ffffff;
                     border: 1px solid #e5e7eb;
                     color: #374151;
                     padding: 12px 16px;

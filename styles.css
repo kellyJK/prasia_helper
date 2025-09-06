@@ -1,5 +1,46 @@
 /* Prasia_todo/styles.css */
 
+@charset "utf-8";
+@font-face {
+    font-family: "NanumSquareNeo";
+    src: url("../font/NanumSquareNeoTTF-bRg.woff2") format("woff2"),
+    url("../font/NanumSquareNeoTTF-bRg.woff") format("woff"),
+    url("../font/NanumSquareNeoOTF-bRg.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "NanumSquareNeo";
+  src: url("../font/NanumSquareNeoTTF-cBd.woff2") format("woff2"),
+    url("../font/NanumSquareNeoTTF-cBd.woff") format("woff"),
+    url("../font/NanumSquareNeoOTF-cBd.otf") format("opentype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "NanumSquareNeo";
+  src: url("../font/NanumSquareNeoTTF-dEb.woff2") format("woff2"),
+    url("../font/NanumSquareNeoTTF-dEb.woff") format("woff"),
+    url("../font/NanumSquareNeoOTF-dEb.otf") format("opentype");
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "NanumSquareNeo";
+  src: url("../font/NanumSquareNeoTTF-eHv.woff2") format("woff2"),
+    url("../font/NanumSquareNeoTTF-eHv.woff") format("woff"),
+    url("../font/NanumSquareNeoOTF-eHv.otf") format("opentype");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* 기본 스타일 */
 * {
     margin: 0;
@@ -7,12 +48,138 @@
     box-sizing: border-box;
 }
 
-body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+html {
+    font-family: "NanumSquareNeo", -apple-system, Apple SD Gothic Neo, android sans fullback, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -webkit-text-size-adjust: none;
+    -moz-text-size-adjust: none;
+    -ms-text-size-adjust: none;
+    -moz-osx-font-smoothing: grayscale;
     background-color: #ffffff;
     color: #1e293b;
-    line-height: 1.6;
+
 }
+body:before {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 0;
+    content: "";
+}
+body {
+    width: 100%;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    margin: 0;
+    font-size: 16px;
+    letter-spacing: -0.5px;
+}
+body,
+div,
+dl,
+dt,
+dd,
+ul,
+ol,
+li,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+form,
+fieldset,
+p,
+button,
+iframe,
+th,
+td {
+    margin: 0;
+    padding: 0;
+    word-break: keep-all;
+}
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+nav,
+section,
+summary {
+    display: block;
+    margin: 0;
+    padding: 0;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+dt {
+    font-weight: normal;
+    word-break: keep-all;
+}
+img,
+fieldset,
+iframe,
+button {
+    border: 0 none;
+}
+li {
+    list-style: none;
+}
+button {
+    border: 0 none;
+    font-family: "NanumSquareNeo", -apple-system, Apple SD Gothic Neo,
+    android sans fullback, sans-serif;
+}
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+th,
+td {
+    border-collapse: collapse;
+}
+legend,
+caption,
+hr {
+    display: none;
+}
+select,
+input,
+textarea {
+    padding: 0;
+    /* -webkit-appearance: none; */
+    border-radius: 0;
+}
+i,
+em,
+u,
+cite {
+    font-style: normal;
+}
+strong {
+    font-weight: 800;
+}
+a {
+    text-decoration: none;
+    outline-offset: -1px;
+}
+
+*,
+:after,
+:before {
+    box-sizing: border-box;
+}
+
 
 
 .flex-column {
@@ -74,6 +241,7 @@ body {
 }
 
 .gnb-account-select {
+    font-family: "NanumSquareNeo";
     padding: 8px 16px;
     border: 1px solid #DCDEE3;
     border-radius: 6px;
@@ -114,7 +282,8 @@ select[id="regionSort"] {
     transform: translateX(-100%);
     transition: transform 0.3s ease;
     z-index: 1000;
-    border: 1px solid #EEEFF1;;
+    border: 1px solid #EEEFF1;
+    border-top: none;
 }
 
 .sidebar.collapsed {
@@ -207,6 +376,7 @@ select[id="regionSort"] {
     padding: 20px;
     min-height: calc(100vh - 60px);
     transition: margin-left 0.3s ease;
+    background: rgba(169, 183, 210, 0.05);
 }
 
 .sidebar-collapsed .main-content {
@@ -378,6 +548,12 @@ select[id="regionSort"] {
     margin-bottom: 20px;
 }
 
+.characters-section h2 {
+    font-size: 24px;
+    font-weight: 800;
+}
+
+
 .section-title {
     font-size: 20px;
     font-weight: 600;
@@ -411,7 +587,7 @@ select[id="regionSort"] {
     display: flex;
     align-items: flex-start;
     flex-direction: column;
-    gap: 14px;
+    gap: 10px;
 
 }
 
@@ -469,6 +645,9 @@ select[id="regionSort"] {
 
 .quest-progress {
     min-width: 200px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }
 
 .progress-info {
@@ -528,7 +707,6 @@ select[id="regionSort"] {
 
 /* 빠른 액션 */
 .quick-actions {
-    background: white;
     padding: 24px;
     border-radius: 12px;
     display: flex;
@@ -629,13 +807,14 @@ select[id="regionSort"] {
 
 .main-account {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     border: 1px solid #DCDEE3;
-    border-radius: 999px;
-    padding: 12px 24px;
-    background: #F7F8F9;
-    gap: 24px;
+    border-radius: 12px;
+    padding: 24px;
+    background: rgba(13, 109, 253, 0.03);
+    gap: 10px;
     width: fit-content;
+    flex-direction: column;
 }
 
 .main-account p {
@@ -645,9 +824,12 @@ select[id="regionSort"] {
 .main-account .btn {
     background: #ffffff;
     border-radius: 999px;
-    padding: 0;
-    width: 32px;
-    height: 32px;
+    padding: 4px 8px 4px 16px;
+    /* width: ; */
+    /* height: 32px; */
+    border: 1px solid #DCDEE3;
+    color: #555D6D;
+    margin-top: 8px;
 }
 
 
@@ -660,7 +842,7 @@ select[id="regionSort"] {
 .account-info {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 12px;
 }
 
 .account-meta {
@@ -671,6 +853,7 @@ select[id="regionSort"] {
 .account-actions {
     display: flex;
     gap: 8px;
+    margin-top: 24px !important;
 }
 
 .account-card-content {
@@ -727,7 +910,7 @@ select[id="regionSort"] {
 .character-item {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-end;
     padding: 24px !important;
     background: #f8fafc;
     border-radius: 16px !important;
@@ -798,7 +981,9 @@ select[id="regionSort"] {
 }
 
 .quest-summary {
-
+    display: flex;
+    gap: 10px;
+    flex-direction: column;
     width: 700px;
 }
 
@@ -1039,10 +1224,7 @@ select[id="regionSort"] {
     background: #b91c1c;
 }
 
-.btn-sm {
-    padding: 6px 10px;
-    font-size: 12px;
-}
+
 
 /* 모달 스타일 */
 .modal-overlay {
@@ -1293,6 +1475,7 @@ select[id="regionSort"] {
     color: #374151;
     cursor: pointer;
     min-width: 200px;
+    font-family: "NanumSquareNeo";
 }
 
 .account-selector select:disabled {
@@ -1342,6 +1525,7 @@ select[id="regionSort"] {
     gap: 10px;
     margin: 0 12px;
     border-radius: 8px;
+    font-weight: 700;
 }
 
 .nav-item:hover {
@@ -1421,26 +1605,29 @@ select[id="regionSort"] {
 
 .welcome-card h2, .account-summary h2 {
     font-size: 24px;
-    color: #555D6D
+    font-weight: 800;
+
 }
 
 .welcome-card p, .account-summary p {
     color: #555D6D;
     margin-bottom: 10px;
     line-height: 1.6;
+    font-size: 14px;
 }
 
 
 
 .account-card h3 {
     font-size: 1rem;
-    color: #555D6D
+    color: #0D6DFD;
+    font-weight: 600;
 }
 
 .badge {
     display: inline-block;
     padding: 4px 8px;
-    border-radius: 4px;
+    border-radius: 999px;
     font-size: 0.8rem;
     font-weight: 600;
     margin-left: 8px;
@@ -1448,7 +1635,8 @@ select[id="regionSort"] {
 
 .badge.primary {
     background-color: #dbeafe;
-    color: #1e40af;
+    color: #0354CE;
+
 }
 
 
@@ -1460,7 +1648,7 @@ select[id="regionSort"] {
     padding: 12px 24px;
     border: none;
     border-radius: 8px;
-    font-size: 1rem;
+    font-size: 0.85rem;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s;
@@ -1528,7 +1716,7 @@ select[id="regionSort"] {
 
 .page-header h2 {
     margin: 0;
-    color: #555D6D
+    font-weight: 800;
 }
 
 .accounts-list {
@@ -1548,8 +1736,8 @@ select[id="regionSort"] {
 }
 
 .character-card, .account-item, .character-item {
-    background: white;
-    border-radius: 8px;
+    background: #ffffff;
+    border-radius: 12px;
     padding: 20px;
     border: 1px solid #D1D3D8;
 }
@@ -1559,8 +1747,12 @@ select[id="regionSort"] {
 }
 
 .character-card h4, .account-item h3, .character-item h3 {
-    color: #555D6D;
+    color: #0D6DFD;
     font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
 }
 
 
@@ -1568,6 +1760,15 @@ select[id="regionSort"] {
     color: #555D6D;
     font-size: 14px;
 }
+
+
+.character-info-details{
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+
 
 .quest-progress, .quest-summary {
     margin-top: 15px;
@@ -1600,7 +1801,7 @@ select[id="regionSort"] {
 }
 
 .btn-sm {
-    padding: 6px 14px;
+    padding: 8px 14px;
     font-size: 0.9rem;
     border-radius: 999px;
 }
@@ -1624,6 +1825,12 @@ select[id="regionSort"] {
     text-align: center;
     padding: 40px 20px;
     color: #555D6D;
+}
+
+
+.empty-state {
+    flex-direction: column;
+    gap: 0px;
 }
 
 .empty-state p {
@@ -1665,7 +1872,8 @@ select[id="regionSort"] {
 
 .settings-section h3 {
     margin: 0 0 20px 0;
-    color: #555D6D
+    color: #2A3038;
+    font-weight: 700;
 }
 
 .settings-actions {
@@ -1675,9 +1883,12 @@ select[id="regionSort"] {
 }
 
 .app-info {
-    background: #f3f4f6;
-    border-radius: 8px;
+    background: rgba(13, 109, 253, 0.03);
+    border-radius: 12px;
     padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }
 
 .app-info p {
@@ -1874,10 +2085,10 @@ select[id="regionSort"] {
 
 /* 독립 실행용 아코디언 스타일 */
 .covenant-accordion {
-    margin-top: 15px;
     border: 1px solid #e5e7eb;
     border-radius: 8px;
     overflow: hidden;
+    margin-top: 10px;
 }
 
 .accordion-header {
@@ -1936,7 +2147,7 @@ select[id="regionSort"] {
 .covenant-checkboxes {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 14px;
 }
 
 /* 독립 실행용 모바일 메뉴 토글 */
@@ -1997,7 +2208,7 @@ select[id="regionSort"] {
 }
 
 .calendar-container {
-    background: white;
+
     border-radius: 12px;
     /* padding: 20px; */
     /* max-width: 1400px; */
