@@ -993,80 +993,8 @@ select[id="regionSort"] {
     margin-bottom: 8px;
 }
 
-.quest-completed {
-    color: #059669;
-    font-weight: 500;
-}
 
-.quest-remaining {
-    color: #dc2626;
-    font-weight: 500;
-}
 
-.quest-total {
-    color: #64748b;
-    font-weight: 500;
-}
-
-.zones-section {
-    margin-top: 20px;
-}
-
-.zones-title {
-    font-size: 16px;
-    font-weight: 600;
-    color: #374151;
-    margin-bottom: 16px;
-}
-
-.zones-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 16px;
-}
-
-.zone-group {
-    border: 1px solid #EEEFF1;
-    border-radius: 8px;
-    overflow: hidden;
-}
-
-.zone-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 16px;
-    background: #f8fafc;
-    border-bottom: 1px solid #EEEFF1;
-}
-
-.zone-name {
-    font-weight: 600;
-    color: #374151;
-}
-
-.zone-controls {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.zone-count {
-    font-weight: 600;
-    color: #1e293b;
-    min-width: 20px;
-    text-align: center;
-}
-
-.strongholds-list {
-    padding: 12px 16px;
-}
-
-.stronghold-item {
-    padding: 4px 0;
-    font-size: 12px;
-    color: #64748b;
-}
 
 /* 폼 스타일 */
 .form-group {
@@ -1127,30 +1055,6 @@ select[id="regionSort"] {
     margin-top: 24px;
 }
 
-.form-message {
-    padding: 12px 16px;
-    border-radius: 6px;
-    margin-bottom: 16px;
-    font-size: 14px;
-}
-
-.form-message--error {
-    background: #fef2f2;
-    color: #dc2626;
-    border: 1px solid #fecaca;
-}
-
-.form-message--warning {
-    background: #fffbeb;
-    color: #d97706;
-    border: 1px solid #fed7aa;
-}
-
-.form-message--success {
-    background: #f0fdf4;
-    color: #059669;
-    border: 1px solid #bbf7d0;
-}
 
 
 .form-home {
@@ -1192,7 +1096,7 @@ select[id="regionSort"] {
 }
 
 .btn-secondary {
-    background: #f1f5f9;
+    background: #ffffff;
     color: #374151;
     border: 1px solid #DCDEE3;
 }
@@ -1210,10 +1114,7 @@ select[id="regionSort"] {
     height: 40px;
     border-radius: 999px !important;
     gap: 6px !important;
-
 }
-
-
 
 .btn-danger {
     background: #dc2626;
@@ -1291,84 +1192,7 @@ select[id="regionSort"] {
 }
 
 
-/* 빈 상태 */
-.empty-state {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 300px;
-    text-align: center;
-}
 
-.empty-message h3 {
-    font-size: 20px;
-    font-weight: 600;
-    color: #374151;
-    margin-bottom: 8px;
-}
-
-.empty-message p {
-    color: #64748b;
-    margin-bottom: 20px;
-}
-
-/* 플레이스홀더 페이지 */
-.placeholder-page {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: calc(100vh - 60px);
-    padding: 20px;
-}
-
-.placeholder-container {
-    text-align: center;
-    max-width: 400px;
-}
-
-.placeholder-title {
-    font-size: 24px;
-    font-weight: 600;
-    color: #374151;
-    margin-bottom: 12px;
-}
-
-.placeholder-message {
-    color: #64748b;
-    margin-bottom: 24px;
-}
-
-/* 에러 오버레이 */
-.error-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 3000;
-}
-
-.error-container {
-    background: white;
-    padding: 40px;
-    border-radius: 12px;
-    text-align: center;
-    max-width: 400px;
-}
-
-.error-container h2 {
-    color: #dc2626;
-    margin-bottom: 12px;
-}
-
-.error-container p {
-    color: #64748b;
-    margin-bottom: 24px;
-}
 
 /* 반응형 디자인 */
 @media (max-width: 768px) {
@@ -1388,30 +1212,7 @@ select[id="regionSort"] {
         padding: 0 16px;
     }
     
-    .gnb-account-select {
-        min-width: 150px;
-    }
     
-    .home-content,
-    .accounts-content,
-    .characters-content {
-        padding: 16px;
-    }
-    
-    .account-summary-content {
-        flex-direction: column;
-        gap: 16px;
-        align-items: flex-start;
-    }
-    
-    .covenant-stats {
-        flex-direction: column;
-        gap: 12px;
-    }
-    
-    .zones-grid {
-        grid-template-columns: 1fr;
-    }
     
     .modal {
         margin: 20px;
@@ -1423,35 +1224,6 @@ select[id="regionSort"] {
     }
 }
 
-@media (max-width: 480px) {
-    .gnb-logo {
-        font-size: 16px;
-    }
-    
-    .gnb-account-select {
-        min-width: 120px;
-        font-size: 12px;
-    }
-    
-    .characters-table {
-        font-size: 12px;
-    }
-    
-    .characters-table th,
-    .characters-table td {
-        padding: 8px;
-    }
-    
-    .character-info {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 4px;
-    }
-    
-    .quick-actions-grid {
-        grid-template-columns: 1fr;
-    }
-}
 
 /* ===== 독립 실행 파일용 추가 스타일 ===== */
 
@@ -1483,20 +1255,6 @@ select[id="regionSort"] {
     color: #9ca3af;
     cursor: not-allowed;
 }
-
-/* 독립 실행용 사이드바 스타일 */
-/* .sidebar {
-    position: fixed;
-    left: 0;
-    top: 60px;
-    width: 250px;
-    height: calc(100vh - 60px);
-    background: #555D6D
-    color: white;
-    transform: translateX(-100%);
-    transition: transform 0.3s ease;
-    z-index: 1000;
-} */
 
 .sidebar.open {
     transform: translateX(0);
@@ -1564,29 +1322,11 @@ select[id="regionSort"] {
 .app-container {
     margin: 0 auto;
     padding: 24px;
-}
-
-.app-header {
-    text-align: center;
-    margin-bottom: 40px;
-}
-
-.app-header h1 {
-    font-size: 2.5rem;
-    margin-bottom: 10px;
-    color: #555D6D
-}
-
-.app-header p {
-    font-size: 1.1rem;
-    color: #555D6D;
-}
-
-.app-content {
     display: flex;
     flex-direction: column;
     gap: 30px;
 }
+
 
 .welcome-card {
     padding: 60px 24px 24px 24px;
@@ -1641,70 +1381,12 @@ select[id="regionSort"] {
 
 
 
-.btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 12px 24px;
-    border: none;
-    border-radius: 8px;
-    font-size: 0.85rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
-    text-decoration: none;
-}
-
-.btn-primary {
-    background-color: #0D6DFD;
-    color: white;
-}
-
-.btn-primary:hover {
-    background-color: #0354CE;
-    transform: translateY(-1px);
-}
-
-.btn-secondary {
-    background-color: #f3f4f6;
-    color: #374151;
-}
-
-.btn-secondary:hover {
-    background-color: #e5e7eb;
-    transform: translateY(-1px);
-}
 
 .btn .icon {
     width: 24px;
     height: 24px;
 }
 
-.status-info {
-    display: flex;
-    gap: 20px;
-    justify-content: center;
-    flex-wrap: wrap;
-}
-
-.status-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 16px;
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.status-text {
-    font-size: 0.9rem;
-    color: #555D6D;
-}
-
-.status-indicator.status-success {
-    background-color: #059669;
-}
 
 /* 독립 실행용 추가 UI 스타일 */
 .page-header {
@@ -1838,24 +1520,6 @@ select[id="regionSort"] {
     font-size: 1.1rem;
 }
 
-.info-card {
-    background: white;
-    border-radius: 12px;
-    padding: 30px;
-
-    text-align: center;
-}
-
-.info-card h3 {
-    margin: 0 0 15px 0;
-    color: #555D6D
-}
-
-.info-card p {
-    margin: 0 0 20px 0;
-    color: #555D6D;
-    line-height: 1.6;
-}
 
 .settings-content {
     display: flex;
@@ -1896,90 +1560,7 @@ select[id="regionSort"] {
     color: #374151;
 }
 
-/* 독립 실행용 모달 스타일 */
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 2000;
-}
 
-.modal {
-    background: white;
-    border-radius: 12px;
-    padding: 30px;
-    max-width: 500px;
-    width: 90%;
-    max-height: 90vh;
-    overflow-y: auto;
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-}
-
-.modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-    padding-bottom: 15px;
-    border-bottom: 1px solid #e5e7eb;
-}
-
-.modal-title {
-    font-size: 1.5rem;
-    font-weight: 600;
-    color: #555D6D;
-    margin: 0;
-}
-
-.modal-close {
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    cursor: pointer;
-    color: #555D6D;
-    padding: 0;
-    width: 30px;
-    height: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.modal-close:hover {
-    color: #374151;
-}
-
-.form-group {
-    margin-bottom: 20px;
-}
-
-.form-label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: 500;
-    color: #374151;
-}
-
-.form-input, .form-select {
-    width: 100%;
-    padding: 12px 16px;
-    border: 1px solid #DCDEE3;
-    border-radius: 6px;
-    font-size: 1rem;
-    transition: border-color 0.2s;
-}
-
-.form-input:focus, .form-select:focus {
-    outline: none;
-    border-color: #0D6DFD;
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-}
 
 .checkbox-item input[type="checkbox"] {
      accent-color: #0D6DFD;
@@ -2415,5 +1996,198 @@ select[id="regionSort"] {
     
     .calendar-container {
         padding: 12px;
+    }
+}
+
+/* 가이드 섹션 스타일 */
+/* .guide-section {
+    margin: 24px 0;
+} */
+
+.guide-container {
+    background: #ffffff;
+}
+
+.guide-title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #D1D3D8;
+}
+
+.guide-title-row h3 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
+    color: #1f2937;
+}
+
+.guide-subtitle {
+    font-size: 14px;
+    font-weight: 500;
+    color: #6b7280;
+    font-style: italic;
+}
+
+.guide-content {
+    display: flex;
+    gap: 32px;
+    flex-wrap: wrap;
+}
+
+.guide-preparations {
+    flex: 0 0 300px;
+    min-width: 280px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.guide-preparations h5 {
+    font-size: 16px;
+    font-weight: 700;
+    color: #1f2937;
+    /* border-bottom: 1px solid #e5e7eb; */
+}
+
+.preparations-list {
+    /* list-style: none; */
+    padding: 0;
+    margin: 0;
+    display: flex; 
+    flex-direction: column;
+    gap: 8px;
+}
+
+.preparations-list li {
+    font-size: 14px;
+    color: #4b5563;
+    position: relative;
+    padding-left: 20px;
+    line-height: 160%;
+}
+
+.preparations-list li:before {
+    content: "•";
+    color: #0D6DFD;
+    font-weight: bold;
+    position: absolute;
+    left: 0;
+}
+
+.preparations-list li:last-child {
+    border-bottom: none;
+}
+
+.guide-steps {
+    flex: 1;
+    min-width: 400px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.step-item {
+    padding: 20px;
+    /* background: #f8fafc; */
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.step-item:last-child {
+    margin-bottom: 0;
+}
+
+.step-item h5 {
+    font-size: 16px;
+    font-weight: 700;
+    color: #1f2937;
+    /* margin-bottom: 16px;
+    padding-bottom: 8px; */
+}
+
+.step-list {
+    margin: 0;
+    padding-left: 20px;
+
+}
+
+.step-list li {
+    margin-bottom: 12px;
+    font-size: 14px;
+    color: #4b5563;
+    line-height: 1.6;
+    list-style: disc;
+}
+
+.step-list li:last-child {
+    margin-bottom: 0;
+}
+
+.step-list strong {
+    color: #dc2626;
+    font-weight: 700;
+}
+
+.strong_purple {
+    color: #7c3aed !important;
+    font-weight: 700;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+    .guide-title-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    
+    .guide-content {
+        flex-direction: column;
+        gap: 24px;
+    }
+    
+    .guide-preparations {
+        flex: none;
+        min-width: auto;
+    }
+    
+    .guide-steps {
+        min-width: auto;
+    }
+    
+    .guide-container {
+        padding: 16px;
+    }
+    
+    .step-item {
+        padding: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .guide-container {
+        padding: 12px;
+    }
+    
+    .step-item {
+        padding: 12px;
+    }
+    
+    .guide-header h4 {
+        font-size: 16px;
+    }
+    
+    .step-item h5 {
+        font-size: 14px;
+    }
+    
+    .step-list li {
+        font-size: 13px;
     }
 }
