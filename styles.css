@@ -194,7 +194,7 @@ a {
     top: 0;
     left: 0;
     right: 0;
-    height: 60px;
+    height: 74px;
     background: #ffffff;
     border-bottom: 1px solid #EEEFF1;
     z-index: 1000;
@@ -223,7 +223,7 @@ a {
     font-weight: 700;
     color: #0D6DFD;
     cursor: pointer;
-    padding: 8px 12px;
+    padding: 12px 0;
     border-radius: 6px;
     transition: background-color 0.2s;
 }
@@ -274,9 +274,9 @@ select[id="regionSort"] {
 .sidebar {
     position: fixed;
     left: 0;
-    top: 60px;
+    top: 74px;
     width: 250px;
-    height: calc(100vh - 60px);
+    height: calc(100vh - 74px);
     background: #ffffff;
     color: white;
     transform: translateX(-100%);
