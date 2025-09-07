@@ -372,9 +372,9 @@ select[id="regionSort"] {
 /* 메인 콘텐츠 */
 .main-content {
     margin-left: 250px;
-    margin-top: 60px;
+    margin-top: 74px;
     padding: 20px;
-    min-height: calc(100vh - 60px);
+    min-height: calc(100vh - 74px);
     transition: margin-left 0.3s ease;
     background: rgba(169, 183, 210, 0.05);
 }
