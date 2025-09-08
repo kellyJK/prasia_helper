@@ -549,7 +549,7 @@ select[id="regionSort"] {
 }
 
 .characters-section h2 {
-    font-size: 24px;
+    font-size: 20px;
     font-weight: 800;
 }
 
@@ -1363,10 +1363,14 @@ select:focus{
     margin-bottom: 15px;
 }
 
-.welcome-card h2, .account-summary h2 {
+.welcome-card h2 {
     font-size: 24px;
     font-weight: 800;
+}
 
+.account-summary h2 {
+    font-size: 20px;
+    font-weight: 800;
 }
 
 .welcome-card p, .account-summary p {
@@ -1563,7 +1567,16 @@ select:focus{
     display: flex;
     gap: 15px;
     flex-wrap: wrap;
+    align-items: center;
 }
+
+.settings-actions .notice {
+    background: #ffeeee;
+    padding: 4px 10px;
+    border-radius: 6px;
+}
+
+
 
 .app-info {
     background: rgba(13, 109, 253, 0.03);
@@ -1577,6 +1590,7 @@ select:focus{
 .app-info p {
     margin: 8px 0;
     color: #374151;
+    font-size: 14px;
 }
 
 
@@ -1783,6 +1797,23 @@ select:focus{
     cursor: pointer;
     margin-right: 15px;
 }
+
+.app-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.notice {
+    font-size: 14px;
+    color: #555D6D;
+}
+
+.notice strong {
+    color: #dc2626;
+}
+
+
 
 /* 독립 실행용 반응형 디자인 */
 @media (max-width: 768px) {
