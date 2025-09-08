@@ -807,14 +807,14 @@ select[id="regionSort"] {
 
 .main-account {
     display: flex;
-    align-items: flex-start;
-    border: 1px solid #DCDEE3;
-    border-radius: 12px;
-    padding: 20px;
-    background: rgba(13, 109, 253, 0.03);
-    gap: 10px;
+    align-items: center;
+    border: none;
+    border-radius: none;
+    padding: 0;
+    background: none;
+    gap: 24px;
     width: fit-content;
-    flex-direction: column;
+    /* flex-direction: column; */
 }
 
 .main-account p {
@@ -822,14 +822,14 @@ select[id="regionSort"] {
 }
 
 .main-account .btn {
-    background: #ffffff;
+    /* background: #ffffff; */
     border-radius: 999px;
-    padding: 4px 8px 4px 16px;
-    /* width: ; */
-    /* height: 32px; */
-    border: 1px solid #DCDEE3;
+    padding: 4px;
+    width: 32px;
+    height: 32px;
+    /* border: 1px solid #DCDEE3; */
     color: #555D6D;
-    margin-top: 8px;
+    /* margin-top: 8px; */
 }
 
 
@@ -1386,6 +1386,8 @@ select:focus{
     font-size: 1rem;
     color: #0D6DFD;
     font-weight: 600;
+    display: flex;
+    align-items: center;
 }
 
 .badge {
