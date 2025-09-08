@@ -126,7 +126,7 @@
                 <h3 class="modal-title" id="modalTitle">제목</h3>
                 <button class="modal-close" onclick="closeModal()">&times;</button>
             </div>
-            <div id="modalContent">
+            <div id="modalContent" class="modal-content">
                 <!-- 모달 내용이 여기에 동적으로 삽입됩니다 -->
             </div>
         </div>
@@ -1440,7 +1440,7 @@
 
             const content = `
                 <div class="form-group">
-                    <label class="form-label">주둔지 의뢰 완료 현황</label>
+
                     <div class="form-home">
                         <strong>완료 현황: <span id="questCounter">${currentCompleted}</span>/20</strong>
                         <div class="progress-bar" style="margin-top: 8px;">
